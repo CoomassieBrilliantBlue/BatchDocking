@@ -11,11 +11,11 @@ namespace ConsoleApp
             while (true)
             {
                 Console.WriteLine("请选择要执行的功能：\nPlease select the function to execute:\n");
+                Console.WriteLine("  \u001b[31mA. 完整流程执行\n     Executing the entire procedure\u001b[0m\n");
                 Console.WriteLine("  1. 复制文件到新文件夹\n     Copy the files to a new folder\n");
                 Console.WriteLine("  2. MOL2/PDB/PDBQ转化为PDBQT\n     Convert MOL2/PDB/PDBQ to PDBQT\n");
                 Console.WriteLine("  3. 执行批量对接\n     Batch docking\n");
                 Console.WriteLine("  4. 将文件夹名改为对接评分结果\n     Change the folder name to docking scoring results\n");
-                Console.WriteLine("  \u001b[31mA. 完整流程执行\n     Executing the entire procedure\u001b[0m\n");
                 Console.Write("请输入字符并按Enter键：\nPlease enter character and press Enter:\n");
                 string input = Console.ReadLine();
 
@@ -47,14 +47,14 @@ namespace ConsoleApp
                 }
             }
         }
-// 复制文件到新文件夹
+        // 复制文件到新文件夹
         static void CopyFilesToNewFolder()
         {
             Console.WriteLine("\n\u001b[32m复制文件到新文件夹\nCopy the file(s) to a new folder\u001b[0m\n");
 
-            Console.Write("\n请选择输入目录：\nPlease select input directory\n");
+            Console.Write("\n请选择输入目录：(配体分子所在的目录)\nPlease select input directory: (directory where ligand molecules are located)\n");
             string inputPath = GetDirectoryPath();
-            Console.Write("\n请选择输出目录：\nPlease select output directory\n");
+            Console.Write("\n请选择输出目录：（Docking目录）\nPlease select output directory: (directory for docking)\n");
             string outputPath = GetDirectoryPath();
 
             int count = 1;
@@ -87,18 +87,18 @@ namespace ConsoleApp
                 }
             }
         }
- // mol2转化为pdbqt
+        // mol2转化为pdbqt
         static void MOL2toPDBQT()
         {
             Console.WriteLine("\n\u001b[32mMOL2/PDB/PDBQ转化为pdbqt\nConvert MOL2/PDB/PDBQ to PDBQT\n\u001b[0m\n");
 
-            Console.WriteLine("\n输入mol2所在的文件路径\nPlease enter the directory containing the MOL2 files:");
+            Console.WriteLine("\n输入配体所在的文件路径（Docking目录）：\nPlease enter the file path of the ligand (Docking directory):");
             string mol2Dir = Console.ReadLine().Trim();
 
-            Console.WriteLine("\n输入prepare_ligand4.py\u001b[31m所在的文件夹\u001b[0m的路径(不能有引号)\nPlease enter the directory containing the prepare_ligand4.py script(Cannot have \"\"):");
+            Console.WriteLine("\n输入prepare_ligand4.py\u001b[31m所在的文件夹\u001b[0m的路径(不能有引号)\n通常是C:\\Program Files (x86)\\MGLTools-1.5.7\\Lib\\site-packages\\AutoDockTools\\Utilities24\n\nPlease enter the directory containing the prepare_ligand4.py script(Cannot have \"\"):\nPlease enter the file path of the ligand located in the docking directory. Usually it is \"C:\\Program Files (x86)\\MGLTools-1.5.7\\Lib\\site-packages\\AutoDockTools\\Utilities24\"\n");
             string prepareScriptDir = Console.ReadLine().Trim();
 
-            Console.WriteLine("\n将mol2文件转化为pdbqt文件...\nConverting MOL2 files to PDBQT format...");
+            Console.WriteLine("\n将配体文件转化为pdbqt文件...\nConverting ligand files to PDBQT format...");
 
             int totalFileCount = 0;
             List<string> mol2Paths = CollectMOL2FilePaths(mol2Dir, ref totalFileCount);
@@ -107,6 +107,7 @@ namespace ConsoleApp
             foreach (string mol2Path in mol2Paths)
             {
                 string pdbqtPath = Path.ChangeExtension(mol2Path, ".pdbqt");
+                string mol2directoryPath = Path.GetDirectoryName(mol2Path);
 
                 string command = $"python_mgl \"{prepareScriptDir}\\prepare_ligand4.py\" -l \"{mol2Path}\" -o \"{pdbqtPath}\" -v";
 
@@ -118,6 +119,7 @@ namespace ConsoleApp
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.WorkingDirectory = mol2directoryPath;
 
                 process.Start();
 
@@ -157,7 +159,7 @@ namespace ConsoleApp
         {
             Console.WriteLine("\n\u001b[32m执行批量对接\nBatch docking\n\u001b[0m\n");
             // 提示用户输入配体路径，遍历路径以及其子文件夹的.pdbqt文件
-            Console.Write("请输入配体路径：\nPlease enter the path of the Ligand file:\n");
+            Console.Write("请输入配体所在目录的路径：（Docking目录）\nPlease enter the file path of the directory where the ligand is located (Docking directory):\n");
             string ligandPath = Console.ReadLine();
             // 获取所有.pdbqt文件路径
             string[] ligandFiles = Directory.GetFiles(ligandPath, "*.pdbqt", SearchOption.AllDirectories);
@@ -171,11 +173,11 @@ namespace ConsoleApp
             ligandFiles = sortedFiles.Select(fi => fi.FullName).ToArray();
 
             // 提示用户输入受体文件，受体文件只有一个
-            Console.Write("\n请输入受体文件路径：\nPlease enter the path of the receptor file:\n");
+            Console.Write("\n请输入受体文件的路径：\nPlease enter the path of the receptor file:\n");
             string receptorPath = Console.ReadLine();
 
             // 提示用户输入配置文件
-            Console.Write("\n请输入配置文件路径：\nPlease enter the path of the configuration file:\n");
+            Console.Write("\n请输入配置文件的路径：\nPlease enter the path of the configuration file:\n");
             string configPath = Console.ReadLine();
 
             // 创建一个计时器对象
