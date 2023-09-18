@@ -21,25 +21,34 @@
 
 #### （1）安装依赖软件
 BatchDocking依赖于Autodock Tools和Autodock Vina。请确保在使用之前已经正确安装软件。下载地址如下：
+
 [Autodock Tools](https://ccsb.scripps.edu/mgltools/downloads/)
+
 [Autodock Vina](https://vina.scripps.edu/downloads/)
 
+
 为正确预处理蛋白质，可能需要使用PyMOL软件
+
 [PyMOL](https://pymol.org/)
 #### （2）创建副本
 为MGLTools安装路径下的python.exe创建一个副本，并重命名为python_mgl.exe。将下载的Vina软件重命名为Vina.exe。
+
 ![](./static/1.jpg)
 #### （3）配置环境变量
 打开环境变量配置（开始菜单→设置→系统→关于→高级系统设置→环境变量），将python_mgl.exe和Vina.exe所在的路径添加到用户变量Path中。
+
 ![](./static/2.jpg)
 #### （4）准备对接文件
 需要预处理好的蛋白质文件（PDBQT）配体文件（MOL2/PDB/PDBQ）和用于配置对接参数的Config.txt文件，**具体内容见附录**。推荐的文件组织方式如下：
+
 ![](./static/3.jpg)
 #### （5）使用BatchDocking进行对接
 一般地，进入软件后输入A，选择”完整流程执行“，根据软件内提示输入文件或文件路径即可。
+
 ![](./static/4.jpg)
 #### （6）结果呈现
 结果（结合能评分、配体的位置信息output.pdbqt）会保存在对接工作路径下的每一个子文件夹中。每一个文件夹的名称会被修改为如”F-8-806_3“，表示该文件夹内的配体与蛋白质结合能为-8.806kcal/mol，用于快速筛选结合能力强的配体。
+
 ![](./static/5.jpg)
 ## 附录
 *施工中*  
